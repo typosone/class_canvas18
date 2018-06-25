@@ -1,0 +1,7 @@
+body {
+    background-color: lightgray;
+}
+
+canvas#display {
+    background-color: white;
+}
