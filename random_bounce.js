@@ -14,12 +14,16 @@ function game_tick() {
 window.setInterval(game_tick, FPS);
 
 class Ball {
-    constructor(x, y, speed, angle) {
+    constructor(x, y, speed, angle, color) {
         this.x = x;
         this.y = y;
         const rad = Math.PI * angle / 180;
         this.vx = Math.cos(rad) * speed;
         this.vy = Math.sin(rad) * speed;
+        this.color = color;
+        if (this.color === undefined) {
+            this.color = 'green';
+        }
     }
 
     draw(ctx) {
@@ -28,7 +32,7 @@ class Ball {
         ctx.beginPath();
         ctx.arc(this.x, this.y, 5, 0, ANGLE360);
 
-        ctx.fillStyle = 'green';
+        ctx.fillStyle = this.color;
         ctx.fill();
 
         ctx.restore();
@@ -67,7 +71,11 @@ document.getElementById("start").addEventListener("click",
         const y = Math.floor(Math.random() * 580) + 10;
         const speed = Math.floor(Math.random() * 9) + 2;
         const angle = Math.random() * 360;
-        const ball = new Ball(x, y, speed, angle);
+        const red = Math.floor(Math.random() * 256);
+        const green = Math.floor(Math.random() * 256);
+        const blue = Math.floor(Math.random() * 256);
+        const color = `rgb(${red}, ${green}, ${blue})`;
+        const ball = new Ball(x, y, speed, angle, color);
         balls.push(ball);
     }
 );
