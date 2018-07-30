@@ -33,6 +33,20 @@ class Ball {
         this.vx = Math.cos(rad) * speed;
         this.vy = Math.sin(rad) * speed;
         this.color = color;
+        this.collisionPoint = [
+            [5, 0],  // 0
+            [Math.cos(Math.PI / 6) * 5, Math.sin(Math.PI / 6) * 5],  // 30
+            [Math.cos(Math.PI / 3) * 5, Math.sin(Math.PI / 3) * 5],  // 60
+            [0, 5],  // 90
+            [Math.cos(Math.PI * 2 / 3) * 5, Math.sin(Math.PI * 2 / 3) * 5],  // 120
+            [Math.cos(Math.PI * 5 / 6) * 5, Math.sin(Math.PI * 5 / 6) * 5],  // 150
+            [-5, 0],  // 180
+            [Math.cos(Math.PI * 7 / 6) * 5, Math.sin(Math.PI * 7 / 6) * 5],  // 210
+            [Math.cos(Math.PI * 4 / 3) * 5, Math.sin(Math.PI * 4 / 3) * 5],  // 240
+            [0, -5],  // 270
+            [Math.cos(Math.PI * 5 / 3) * 5, Math.sin(Math.PI * 5 / 3) * 5],  // 300
+            [Math.cos(Math.PI * 11 / 6) * 5, Math.sin(Math.PI * 11 / 6) * 5]  // 330
+        ]
     }
 
     draw(ctx) {
@@ -70,6 +84,19 @@ class Ball {
             this.x -= this.x - 5;
             this.vx = -this.vx;
         }
+    }
+
+    isCollide(ctx) {
+        let flag = false;
+        this.collisionPoint.forEach((point) => {
+            if (!flag) {
+                const cx = this.x + point[0];
+                const cy = this.y + point[1];
+
+                flag = ctx.isPointInPath(cx, cy);
+            }
+        });
+        return flag;
     }
 }
 
@@ -133,23 +160,36 @@ sprites.push(ball);
 function game_tick() {
     // input読み取り
     if (input.up) {
-        ball.y += -2;
+        ball.y += -1;
     }
     if (input.right) {
-        ball.x += 2;
+        ball.x += 1;
     }
     if (input.down) {
-        ball.y += 2;
+        ball.y += 1;
     }
     if (input.left) {
-        ball.x += -2;
+        ball.x += -1;
     }
 
     // canvasの消去
+    let isCollide = false;
     ctx.clearRect(0, 0, 800, 600);
+
     sprites.forEach(sprite => {
         sprite.draw(ctx);
+        if (sprite !== ball) {
+            if (ball.isCollide(ctx)) {
+                isCollide = true;
+            }
+        }
     });
+
+    if (isCollide) {
+        canvas.style.backgroundColor = "lightgray";
+    } else {
+        canvas.style.backgroundColor = "white";
+    }
 }
 
 window.setInterval(game_tick, FPS);
